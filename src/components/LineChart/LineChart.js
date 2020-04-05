@@ -21,7 +21,10 @@ var updateInterval = 500;
 class LineChart extends Component {
 	constructor() {
 		super();
-		this.updateChart = this.updateChart.bind(this);
+        this.updateChart = this.updateChart.bind(this);
+        this.toggleDataSeries = this.toggleDataSeries.bind(this);
+        this.legendMouseOver = this.legendMouseOver.bind(this);
+        this.legendMouseOut = this.legendMouseOut.bind(this);
 	}
 	componentDidMount() {
 		setInterval(this.updateChart, updateInterval);
@@ -34,7 +37,7 @@ class LineChart extends Component {
 		xVal++;
 		// if (dps.length >  100 ) {
 		// 	dps.shift();
-		// }
+        // }
 		this.chart.render();
     }
     toggleDataSeries(e) {
@@ -43,7 +46,7 @@ class LineChart extends Component {
         } else {
             e.dataSeries.visible = true;
         }
-        
+        this.chart.render();
     }
     legendMouseOver(e) {
         e.chart.options.data.forEach(data => {
@@ -52,6 +55,7 @@ class LineChart extends Component {
         e.dataSeries.lineThickness = 6;
         //e.dataSeries.lineThickness = e.chart.data[e.dataSeriesIndex].lineThickness * 2;
         //e.dataSeries.markerSize = e.chart.data[e.dataSeriesIndex].markerSize + 2;
+        this.chart.render();
     }
     legendMouseOut(e) {
         e.chart.options.data.forEach(data => {
@@ -59,10 +63,12 @@ class LineChart extends Component {
         })
         //e.dataSeries.lineThickness = e.chart.data[e.dataSeriesIndex].lineThickness / 2;
         //e.dataSeries.markerSize = e.chart.data[e.dataSeriesIndex].markerSize - 2;
+        this.chart.render();
     }
 
 	render() {
 		const options = {
+            zoomEnabled:true,
             theme: "dark2",
             legend: {
                 cursor:"pointer",
