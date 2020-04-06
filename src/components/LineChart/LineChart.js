@@ -3,6 +3,8 @@ import CanvasJSReact from '../../assets/canvasjs.react';
 import './LineChart.css';
 import { Card, Container, Row, Col, Button, Form } from 'react-bootstrap';
 
+const axios = require('axios').default;
+
 let CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 
@@ -19,7 +21,7 @@ let yVal = 15;
 let zVal = 15;
 let updateInterval = 1000;
 
-
+const IOT_ADDRESS = "http://mcu.local";
 
 class LineChart extends Component {
     constructor() {
@@ -33,15 +35,30 @@ class LineChart extends Component {
         setInterval(this.updateChart, updateInterval);
     }
     updateChart() {
+
+        // Make a request for a user with a given ID
+        axios.get('http://mcu.local')
+            .then( res => console.log(res.data)
+                
+            )
+            .catch(function (error) {
+                // handle error
+                console.log(error);
+            })
+            .then(function () {
+                // always executed
+            });
+
         yVal = yVal + Math.round(5 + Math.random() * (-5 - 5));
         dps.push({ x: xVal, y: yVal });
 
         zVal = zVal - Math.round(5 + Math.random() * (-5 - 5));
-        dps2.push({ x: xVal, y: zVal });
+        dps2.push({ x: xVal, y: null });
         xVal++;
-        // if (dps.length >  100 ) {
-        // 	dps.shift();
-        // }
+        if (dps.length > 100) {
+            dps.shift();
+            dps2.shift();
+        }
         this.chart.render();
     }
     toggleDataSeries(e) {
@@ -94,10 +111,10 @@ class LineChart extends Component {
                     <Card.Header><h5>PID Graph</h5></Card.Header>
                     <Card.Title></Card.Title>
                     <Card.Body>
-                    <CanvasJSChart options={options}
-                        onRef={ref => this.chart = ref}
-                    />
-                    {/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
+                        <CanvasJSChart options={options}
+                            onRef={ref => this.chart = ref}
+                        />
+                        {/*You can get reference to the chart instance as shown above using onRef. This allows you to access all chart properties and methods*/}
                     </Card.Body>
                 </Card>
             </div>
