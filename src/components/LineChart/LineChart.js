@@ -20,6 +20,7 @@ let xVal = dps.length + 1;
 let yVal = 15;
 let zVal = 15;
 let updateInterval = 1000;
+let returnValue;
 
 const IOT_ADDRESS = "http://mcu.local";
 
@@ -30,28 +31,36 @@ class LineChart extends Component {
         this.toggleDataSeries = this.toggleDataSeries.bind(this);
         this.legendMouseOver = this.legendMouseOver.bind(this);
         this.legendMouseOut = this.legendMouseOut.bind(this);
+        this.pollServer = this.pollServer.bind(this);
     }
     componentDidMount() {
+        setInterval(this.pollServer, updateInterval);
         setInterval(this.updateChart, updateInterval);
     }
-    updateChart() {
 
+    pollServer() {
         // Make a request for a user with a given ID
-        axios.get('http://mcu.local')
-            .then( res => console.log(res.data)
-                
+        axios.get(IOT_ADDRESS)
+            .then( res => {returnValue = res.data; console.log(returnValue)}
             )
             .catch(function (error) {
                 // handle error
                 console.log(error);
             })
             .then(function () {
-                // always executed
+                
             });
+    }
 
+    updateChart() {
+        let numericValue = null;
+        if(returnValue != null) {
+           numericValue = Number(returnValue.value);
+        }
+                    
         yVal = yVal + Math.round(5 + Math.random() * (-5 - 5));
-        dps.push({ x: xVal, y: yVal });
-
+        dps.push({ x: xVal, y: numericValue });
+        
         zVal = zVal - Math.round(5 + Math.random() * (-5 - 5));
         dps2.push({ x: xVal, y: null });
         xVal++;
